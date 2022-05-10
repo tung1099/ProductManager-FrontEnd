@@ -12,8 +12,8 @@ function showList(){
         <td>${products[i].quantity}</td>
         <td>${products[i].description}</td>
         <td><img src="${'http://localhost:8080/image/' + products[i].image}" width="100px"></td>
-        <td><button onclick="deleteProduct(${products[i].id})">Delete</button></td>
-        <td><button type="button" onclick="showEditForm(${products[i].id})" data-bs-toggle="modal" data-bs-target="#myModal1">Update</button></td>
+        <td><button type="button" class="btn btn-danger" onclick="deleteProduct(${products[i].id})">Delete</button></td>
+        <td><button type="button" class="btn btn-primary" onclick="showEditForm(${products[i].id})" data-bs-toggle="modal" data-bs-target="#myModal1">Edit</button></td>
     </tr>`
             }
             $("#list-product").html(content);
@@ -22,6 +22,37 @@ function showList(){
 }
 showList()
 
+function showCreateForm(){
+    let content = `<div class="container">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" class="form-control" id="price">
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="text" class="form-control" id="quantity">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description">
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="image">
+                        </div>
+                    </form>
+                </div>
+                        <div class="modal-footer">
+                             <button type="submit" class="btn btn-primary" onclick="createProduct()">Create</button>
+                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>`
+    $("#showModal").html(content);
+}
 function createProduct(){
     let name = $(`#name`).val();
     let price = $(`#price`).val();
@@ -85,4 +116,48 @@ function editProduct(id){
     })
     event.preventDefault();
 }
-
+function showEditForm(id){
+    let content = `<div class="container">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="u-name" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" class="form-control" id="u-price">
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="text" class="form-control" id="u-quantity">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="u-description">
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <div id="showImg"></div>
+                            <input type="file" class="form-control" id="u-image">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="editProduct(${id})" data-bs-dismiss="modal">Edit</button>
+                  
+                        </div>
+                    </form>
+                </div>`
+    $("#showModalEdit").html(content);
+    $.ajax({
+        type:"GET",
+        url:`http://localhost:8080/products/${id}`,
+        success:function (product){
+            $('#u-name').val(product.name)
+            $('#u-price').val(product.price)
+            $('#u-quantity').val(product.quantity)
+            $('#u-description').val(product.description)
+            let img = `<img src="http://localhost:8080/image/${product.image}" width="100">`
+            $(`#showImg`).html(img)
+        }
+    })
+}
